@@ -11,7 +11,7 @@ test("Validating visibility of elements", async ({ page }) => {
     await expect(testInput).toBeHidden();
 });
 
-test.only("Popup validations", async ({ page }) => {
+test("Popup validations", async ({ page }) => {
     await page.goto("https://rahulshettyacademy.com/AutomationPractice");
 
 
@@ -21,4 +21,13 @@ test.only("Popup validations", async ({ page }) => {
     });
 
     await page.locator("#confirmbtn").click();
+});
+
+test.only("Mouse Hovering", async ({ page }) => {
+    await page.goto("https://rahulshettyacademy.com/AutomationPractice");
+
+    await page.locator("#mousehover").hover();
+    await page.locator(".mouse-hover a").first().click();
+    await page.locator("#mousehover").hover();
+    await page.locator(".mouse-hover a").last().click();
 });
