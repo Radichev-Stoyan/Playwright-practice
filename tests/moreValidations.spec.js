@@ -23,11 +23,19 @@ test("Popup validations", async ({ page }) => {
     await page.locator("#confirmbtn").click();
 });
 
-test.only("Mouse Hovering", async ({ page }) => {
+test("Mouse Hovering", async ({ page }) => {
     await page.goto("https://rahulshettyacademy.com/AutomationPractice");
 
     await page.locator("#mousehover").hover();
     await page.locator(".mouse-hover a").first().click();
     await page.locator("#mousehover").hover();
     await page.locator(".mouse-hover a").last().click();
+});
+
+test.only("iFrame practice", async ({ page }) => {
+    await page.goto("https://rahulshettyacademy.com/AutomationPractice");
+    const framesPage = page.frameLocator("#courses-iframe");
+    await framesPage.locator("li a[href*='lifetime-access']:visible").click();
+    const txtContent = framesPage.locator(".text span").textContent();
+    console.log(await txtContent);
 });
