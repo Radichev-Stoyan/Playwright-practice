@@ -71,7 +71,7 @@ test('Browser Context Declaration', async ({ page }) => {
 
     await expect(page.getByText(" Thankyou for the order. ")).toBeVisible();
 
-    await page.pause();
+    // await page.pause();
 
     // const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
     // // console.log(orderId);

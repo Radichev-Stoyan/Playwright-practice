@@ -88,5 +88,5 @@ test('Browser Context Declaration', async ({ page }) => {
 	const orderIdDetails = await page.locator(".col-text").textContent();
 	await expect(orderId.includes(orderIdDetails)).toBeTruthy();
 
-	await page.pause();
+	// await page.pause();
 });
