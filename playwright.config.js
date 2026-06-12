@@ -13,7 +13,8 @@ const config = ({
   reporter: 'html',
   use: {
     browserName: 'chromium',
-    headless: false,
+    // headless: false,
+    headless: process.env.CI ? true : false,
     screenshot: 'on',
     trace: 'retain-on-failure',
   }
