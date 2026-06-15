@@ -9,8 +9,6 @@ const loginPayload = {
     userEmail: process.env.USER_EMAIL,
     userPassword: process.env.USER_PASSWORD
 }
-console.log('USER_EMAIL:', process.env.USER_EMAIL);
-console.log('USER_PASSWORD exists:', !!process.env.USER_PASSWORD);
 const orderPayload = { orders: [{ country: "Bulgaria", productOrderedId: "6960eac0c941646b7a8b3e68" }] };
 
 test.beforeAll(async () => {
