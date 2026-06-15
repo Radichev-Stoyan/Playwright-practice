@@ -56,7 +56,7 @@ test('Browser Context Declaration', async () => {
     // await page.locator("[placeholder*='Country']").pressSequentially('bul', { delay: 300 });
     // await page.locator("[placeholder*='Country']").fill('bul');
 
-    // Validating dropdown with auto-suggestion
+    // Validating dropdown with auto-suggestion.
     const country = page.locator("[placeholder*='Country']");
 
     await expect(country).toBeVisible();
