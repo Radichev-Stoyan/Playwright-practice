@@ -28,8 +28,6 @@ test.beforeAll(async () => {
 });
 
 test('Login via API and place order', async ({ page }) => {
-    const products = page.locator(".card-body");
-
     // Web API implementation
     await page.addInitScript(value => {
         window.localStorage.setItem('token', value);
@@ -40,7 +38,7 @@ test('Login via API and place order', async ({ page }) => {
     // await page.waitForLoadState('networkidle');
     await page.locator(".card-body b").first().waitFor();
 
-    const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+    // const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
     // console.log(orderId);
 
     await page.locator("button[routerlink*='myorders']").click();
@@ -50,12 +48,12 @@ test('Login via API and place order', async ({ page }) => {
 
     for (let i = 0; i < await rows.count(); i++) {
         const currId = await rows.nth(i).locator("th").textContent();
-        if (orderId.includes(currId)) {
+        if (purchaseId.includes(currId)) {
             await rows.nth(i).locator("button").first().click();
             break;
         }
     }
 
     const orderIdDetails = await page.locator(".col-text").textContent();
-    await expect(orderId.includes(orderIdDetails)).toBeTruthy();
+    await expect(purchaseId.includes(orderIdDetails)).toBeTruthy();
 });
