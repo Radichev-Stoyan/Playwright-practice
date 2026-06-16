@@ -15,6 +15,6 @@ export default defineConfig({
     browserName: 'chromium',
     headless: process.env.CI ? true : false,
     screenshot: 'on',
-    trace: 'retain-on-failure',
+    trace: 'retain-on-failure', // on, off
   },
 });
