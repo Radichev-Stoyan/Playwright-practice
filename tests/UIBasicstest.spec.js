@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.only('Browser Context Declaration', async ({ browser }) => {
+test('Browser Context Declaration', async ({ browser }) => {
 	const context = await browser.newContext();
 	const page = await context.newPage();
 	// Blocking certain requests
