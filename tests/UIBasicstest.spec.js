@@ -1,11 +1,15 @@
 import { test, expect } from '@playwright/test';
 
-test('Browser Context Declaration', async ({ browser }) => {
+test.only('Browser Context Declaration', async ({ browser }) => {
 	const context = await browser.newContext();
 	const page = await context.newPage();
+	// Blocking certain requests
+	page.route("**/*.{jpg,png,jpeg}", route => route.abort());
 	const userName = page.locator("#username");
 	const signIn = page.locator("#signInBtn");
 	const cardTitles = page.locator(".card-body a");
+	page.on("request", request => console.log(request.url()));
+	page.on("response", response => console.log(response.url(), response.status()));
 
 	await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
 
@@ -19,16 +23,7 @@ test('Browser Context Declaration', async ({ browser }) => {
 
 	await userName.fill("");
 	await userName.fill("rahulshettyacademy");
-	await signIn.click("left");
-
-	console.log(await cardTitles.first().textContent());
-	console.log(await cardTitles.nth(1).textContent());
-
-	// we have to use assertion if we want to get all the elements since playwright will return an empty [] as a valid value
-	// await expect(cardTitles.first()).toBeVisible();
-
-	const allTitles = await cardTitles.allTextContents();
-	console.log(allTitles);
+	await signIn.click();
 });
 
 test('UI Controls', async ({ page }) => {
