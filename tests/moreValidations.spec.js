@@ -41,7 +41,7 @@ test("iFrame practice", async ({ page }) => {
     console.log(await txtContent);
 });
 
-test.only("Screenshot and visual comparison", async ({ page }) => {
+test("Screenshot and visual comparison", async ({ page }) => {
     const testInput = page.locator("#displayed-text");
     await page.goto(url);
     await expect(testInput).toBeVisible();
@@ -49,4 +49,9 @@ test.only("Screenshot and visual comparison", async ({ page }) => {
     await page.locator("#hide-textbox").click();
     await page.screenshot({ path: 'screenshot.png' });
     await expect(testInput).toBeHidden();
+});
+
+test.only("Visual", async ({ page }) => {
+    await page.goto("https://www.google.com/");
+    expect(await page.screenshot()).toMatchSnapshot("landing.png");
 });
