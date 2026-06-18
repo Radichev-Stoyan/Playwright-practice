@@ -15,7 +15,7 @@ test('Browser Context Declaration', async ({ browser }) => {
 
 	await userName.fill("rahulshettyacade");
 	await page.locator("[type='password']").fill("Learning@830$3mK2");
-	await signIn.click("left");
+	await signIn.click();
 
 	console.log(await page.locator("[style*='block']").textContent());
 
@@ -68,6 +68,10 @@ test('Child windows handling', async ({ browser }) => {
 	]);
 
 	const text = await newPage.locator(".red").textContent();
+
+	if (!text) {
+		throw new Error("Text is invalid");
+	}
 	const arrayText = text.split("@");
 	const domain = arrayText[1].split(" ")[0];
 	console.log(domain);

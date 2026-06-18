@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+/** @type {{ token?: string, orderId?: string }} */
 let response = {};
 const loginPayload = {
     userEmail: process.env.USER_EMAIL,
@@ -28,7 +29,7 @@ test('API response intercepting and replacing', async ({ page }) => {
     await page.route("https://rahulshettyacademy.com/api/ecom/order/get-orders-for-customer/*", async route => {
         const orderResponse = await page.request.fetch(route.request());
         await route.fulfill({
-            orderResponse,
+            response: orderResponse,
             body: JSON.stringify(fakePayLoadOrders)
         })
     });

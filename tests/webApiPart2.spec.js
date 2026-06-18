@@ -1,48 +1,61 @@
 import { test, expect } from '@playwright/test';
 import { loginPayload } from './utils/credentials';
-let webContext = {};
+
+/** @type {import('@playwright/test').BrowserContext | undefined} */
+let webContext;
 
 test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
+
     await page.goto("https://rahulshettyacademy.com/client");
+
     await page.locator("#userEmail").fill(loginPayload.userEmail);
-    await page.locator("#userPassword").type(loginPayload.userPassword);
+    await page.locator("#userPassword").fill(loginPayload.userPassword);
     await page.locator("[value='Login']").click();
-    await page.waitForLoadState('networkidle');
+
+    await page.locator(".card-body b").first().waitFor();
+
     await context.storageState({ path: 'state.json' });
+
     webContext = await browser.newContext({ storageState: 'state.json' });
+
+    await context.close();
 });
 
 test('Browser Context Declaration', async () => {
+    if (!webContext) {
+        throw new Error('Web context was not initialized');
+    }
+
     const productName = 'ZARA COAT 3';
     const email = loginPayload.userEmail;
+
     const page = await webContext.newPage();
+
     await page.goto("https://rahulshettyacademy.com/client");
+
     const products = page.locator(".card-body");
 
-    // alternative to waitForLoadState('networkidle') since it may behave a little flaky
     await page.locator(".card-body b").first().waitFor();
-    // await page.locator(".card-body b").first().waitForLoadState('networkidle');
 
-    const titles = await page.locator(".card-body b").allTextContents();
-
-    // Selecting Zara Coat 3 and adding it to the cart
     const count = await products.count();
+
     for (let i = 0; i < count; i++) {
-        if (await products.nth(i).locator("b").textContent() === productName) {
+        const productTitle = (await products.nth(i).locator("b").textContent())?.trim();
+
+        if (productTitle === productName) {
             await products.nth(i).locator("text= Add To Cart").click();
             break;
         }
-    };
+    }
 
-    // Accessing the cart
     await page.locator("[routerlink*='cart']").click();
-    await page.locator("div li").first().waitFor();
-    const bool = await page.locator(`h3:has-text("${productName}")`).isVisible();
-    expect(bool).toBeTruthy();
 
-    // Proceeding with checkout
+    await page.locator("div li").first().waitFor();
+
+    await expect(page.locator(`h3:has-text("${productName}")`)).toBeVisible();
+
     await page.locator("text=Checkout").click();
 
     await page.locator(".form__cc input.txt").nth(0).fill("4542 9931 9292 2293");
@@ -53,51 +66,61 @@ test('Browser Context Declaration', async () => {
     await page.locator(".form__cc input[name='coupon']").fill("rahulshettyacademy");
     await page.locator(".form__cc button:has-text('Apply Coupon')").click();
 
-    // await page.locator("[placeholder*='Country']").pressSequentially('bul', { delay: 300 });
-    // await page.locator("[placeholder*='Country']").fill('bul');
-
-    // Validating dropdown with auto-suggestion.
     const country = page.locator("[placeholder*='Country']");
 
     await expect(country).toBeVisible();
+
     await country.click();
+
     await page.keyboard.type("bul", { delay: 300 });
 
     const options = page.locator(".ta-results");
+
     await options.waitFor();
+
     const optionsCount = await options.locator("button").count();
+
     for (let i = 0; i < optionsCount; i++) {
-        const text = await options.locator("button").nth(i).textContent();
-        if (text === " Bulgaria") {
+        const text = (await options.locator("button").nth(i).textContent())?.trim();
+
+        if (text === "Bulgaria") {
             await options.locator("button").nth(i).click();
             break;
         }
     }
 
-    // Validating email in checkout page
-    expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
+    await expect(page.locator(".user__name [type='text']").first()).toHaveValue(email);
+
     await page.locator(".action__submit").click();
 
     await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
 
-    const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
-    // console.log(orderId);
+    const orderId = (await page.locator(".em-spacer-1 .ng-star-inserted").textContent())?.trim();
+
+    if (!orderId) {
+        throw new Error("Order id is missing");
+    }
 
     await page.locator("button[routerlink*='myorders']").click();
+
     await page.locator("tbody").waitFor();
 
     const rows = page.locator("tbody tr");
 
     for (let i = 0; i < await rows.count(); i++) {
-        const currId = await rows.nth(i).locator("th").textContent();
-        if (orderId.includes(currId)) {
+        const currId = (await rows.nth(i).locator("th").textContent())?.trim();
+
+        if (currId && orderId.includes(currId)) {
             await rows.nth(i).locator("button").first().click();
             break;
         }
     }
 
-    const orderIdDetails = await page.locator(".col-text").textContent();
-    await expect(orderId.includes(orderIdDetails)).toBeTruthy();
+    const orderIdDetails = (await page.locator(".col-text").textContent())?.trim();
 
-    // await page.pause();
+    if (!orderIdDetails) {
+        throw new Error("Order id details is missing");
+    }
+
+    expect(orderId).toContain(orderIdDetails);
 });

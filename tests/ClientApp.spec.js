@@ -70,7 +70,10 @@ test('Browser Context Declaration', async ({ page }) => {
 	await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
 
 	const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
-	// console.log(orderId);
+
+	if (!orderId) {
+		throw new Error("There is no order id")
+	}
 
 	await page.locator("button[routerlink*='myorders']").click();
 	await page.locator("tbody").waitFor();
@@ -79,14 +82,16 @@ test('Browser Context Declaration', async ({ page }) => {
 
 	for (let i = 0; i < await rows.count(); i++) {
 		const currId = await rows.nth(i).locator("th").textContent();
-		if (orderId.includes(currId)) {
+
+		if (currId && orderId.includes(currId)) {
 			await rows.nth(i).locator("button").first().click();
 			break;
 		}
 	}
 
-	const orderIdDetails = await page.locator(".col-text").textContent();
-	await expect(orderId.includes(orderIdDetails)).toBeTruthy();
+	const orderIdDetails = (await page.locator(".col-text").textContent())?.trim();
+	expect(orderIdDetails).toBeTruthy();
+	expect(orderId).toContain(orderIdDetails);
 
 	// await page.pause();
 });
