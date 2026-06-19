@@ -26,9 +26,10 @@ test('Browser Context Declaration', async ({ page }) => {
 
 	// Accessing the cart
 	await page.locator("[routerlink*='cart']").click();
-	await page.locator("div li").first().waitFor();
-	const bool = await page.locator(`h3:has-text("${productName}")`).isVisible();
-	await expect(bool).toBeTruthy();
+
+	const cartProduct = page.locator(".cartSection h3").filter({ hasText: productName });
+
+	await expect(cartProduct).toBeVisible();
 
 	// Proceeding with checkout
 	await page.locator("text=Checkout").click();
@@ -40,9 +41,6 @@ test('Browser Context Declaration', async ({ page }) => {
 	await page.locator(".form__cc input.txt").nth(2).fill("Test User");
 	await page.locator(".form__cc input[name='coupon']").fill("rahulshettyacademy");
 	await page.locator(".form__cc button:has-text('Apply Coupon')").click();
-
-	// await page.locator("[placeholder*='Country']").pressSequentially('bul', { delay: 300 });
-	// await page.locator("[placeholder*='Country']").fill('bul');
 
 	// Validating dropdown with auto-suggestion
 	const country = page.locator("[placeholder*='Country']");

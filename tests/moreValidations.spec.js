@@ -38,7 +38,7 @@ test("iFrame practice", async ({ page }) => {
     const framesPage = page.frameLocator("#courses-iframe");
     await framesPage.locator("li a[href*='lifetime-access']:visible").click();
     const txtContent = framesPage.locator(".text span").textContent();
-    console.log(await txtContent);
+    // console.log(await txtContent);
 });
 
 test("Screenshot and visual comparison", async ({ page }) => {
