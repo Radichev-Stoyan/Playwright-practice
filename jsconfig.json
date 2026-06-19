@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "checkJs": true,
+        "allowJs": true,
+        "noImplicitAny": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": false,
+        "module": "ESNext",
+        "target": "ES2022",
+        "moduleResolution": "Bundler"
+    },
+    "include": [
+        "**/*.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "playwright-report",
+        "test-results"
+    ]
+}

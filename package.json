@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@types/dotenv": "^6.1.1",
-    "dotenv": "^17.4.2"
+    "@types/exceljs": "^0.5.3",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0"
   }
 }
