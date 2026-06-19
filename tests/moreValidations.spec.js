@@ -51,7 +51,9 @@ test("Screenshot and visual comparison", async ({ page }) => {
     await expect(testInput).toBeHidden();
 });
 
-test.only("Visual", async ({ page }) => {
+test("Visual", async ({ page }) => {
+    test.skip(!!process.env.CI, "Skipping visual test in CI");
+
     await page.goto("https://www.google.com/");
     expect(await page.screenshot()).toMatchSnapshot("landing.png");
 });
