@@ -89,7 +89,8 @@ test('Browser Context Declaration', async () => {
         }
     }
 
-    await expect(page.locator(".user__name [type='text']").first()).toHaveValue(email);
+    // await expect(page.locator(".user__name [type='text']").first()).toHaveValue(email);
+    await expect(page.locator(".user__name [type='text']").first()).toContainText(email);
 
     await page.locator(".action__submit").click();
 

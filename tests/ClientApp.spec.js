@@ -12,9 +12,8 @@ test('Browser Context Declaration', async ({ page }) => {
 	await page.waitForLoadState('networkidle');
 
 	// alternative to waitForLoadState('networkidle') since it may behave a little flaky
-	await page.locator(".card-body b").first().waitFor();
-
-	const titles = await page.locator(".card-body b").allTextContents();
+	// await page.locator(".card-body b").first().waitFor();
+	await expect(page.locator(`h5:has-text("${productName}")`)).toBeVisible();
 
 	// Selecting Zara Coat 3 and adding it to the cart
 	const count = await products.count();
@@ -92,6 +91,4 @@ test('Browser Context Declaration', async ({ page }) => {
 	const orderIdDetails = (await page.locator(".col-text").textContent())?.trim();
 	expect(orderIdDetails).toBeTruthy();
 	expect(orderId).toContain(orderIdDetails);
-
-	// await page.pause();
 });
