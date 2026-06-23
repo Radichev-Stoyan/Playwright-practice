@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
 import LoginPage from '../pageObjects/loginPage';
+import DashboardPage from '../pageObjects/dasboardPage';
 
 test('Browser Context Declaration', async ({ page }) => {
     const productName = 'ZARA COAT 3';
-    const products = page.locator(".card-body");
+
     const email = "sradichev420@gmail.com";
     const password = "bsA$Z5XWL55Hg4J";
 
@@ -13,23 +14,12 @@ test('Browser Context Declaration', async ({ page }) => {
 
     await loginPage.validLogin(email, password);
 
-    await page.waitForLoadState('networkidle');
+    const dashboardPage = new DashboardPage(page);
 
-    // alternative to waitForLoadState('networkidle') since it may behave a little flaky
-    // await page.locator(".card-body b").first().waitFor();
-    await expect(page.locator(`h5:has-text("${productName}")`)).toBeVisible();
+    await dashboardPage.searchProduct(productName);
 
-    // Selecting Zara Coat 3 and adding it to the cart
-    const count = await products.count();
-    for (let i = 0; i < count; i++) {
-        if (await products.nth(i).locator("b").textContent() === productName) {
-            await products.nth(i).locator("text= Add To Cart").click();
-            break;
-        }
-    };
+    await dashboardPage.navigateToCart();
 
-    // Accessing the cart
-    await page.locator("[routerlink*='cart']").click();
 
     const cartProduct = page.locator(".cartSection h3").filter({ hasText: productName });
 

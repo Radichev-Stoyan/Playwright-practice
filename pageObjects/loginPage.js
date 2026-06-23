@@ -14,5 +14,7 @@ export default class LoginPage {
         await this.userName.fill(email);
         await this.password.fill(password);
         await this.signInButton.click();
+
+        await this.page.locator(".card-body").first().waitFor();
     }
 }
