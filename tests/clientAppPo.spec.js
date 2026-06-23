@@ -1,20 +1,21 @@
 import { test, expect } from '@playwright/test';
-import LoginPage from '../pageObjects/loginPage';
-import DashboardPage from '../pageObjects/dasboardPage';
+import PageObjectManager from '../pageObjects/pageObjectManager';
 
 test('Browser Context Declaration', async ({ page }) => {
+    const poManager = new PageObjectManager(page);
+
     const productName = 'ZARA COAT 3';
 
     const email = "sradichev420@gmail.com";
     const password = "bsA$Z5XWL55Hg4J";
 
-    const loginPage = new LoginPage(page);
+    const loginPage = poManager.getLoginPage();
 
     await loginPage.goTo();
 
     await loginPage.validLogin(email, password);
 
-    const dashboardPage = new DashboardPage(page);
+    const dashboardPage = poManager.getDashboardPage();
 
     await dashboardPage.searchProduct(productName);
 
