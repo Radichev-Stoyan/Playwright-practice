@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
+  retries: 1, // The number of times failed tests will be retried
   timeout: 40 * 1000,
 
   expect: {
@@ -28,7 +29,8 @@ export default defineConfig({
         browserName: 'chromium',
         headless: process.env.CI ? true : false,
         screenshot: 'on',
-        trace: 'on', // on, off, retain-on-failure
+        video: 'retain-on-failure',
+        trace: 'retain-on-failure', // on, off, retain-on-failure
         // ignoreHTTPSErrors: true,
         // permissions: ['geolocation'],
       }

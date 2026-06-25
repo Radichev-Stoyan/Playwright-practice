@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+test.describe.configure({ mode: 'parallel' });
+
 test('Browser Context Declaration', async ({ browser }) => {
 	const context = await browser.newContext();
 	const page = await context.newPage();
@@ -7,9 +9,8 @@ test('Browser Context Declaration', async ({ browser }) => {
 	page.route("**/*.{jpg,png,jpeg}", route => route.abort());
 	const userName = page.locator("#username");
 	const signIn = page.locator("#signInBtn");
-	const cardTitles = page.locator(".card-body a");
-	page.on("request", request => console.log(request.url()));
-	page.on("response", response => console.log(response.url(), response.status()));
+	// page.on("request", request => console.log(request.url()));
+	// page.on("response", response => console.log(response.url(), response.status()));
 
 	await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
 
@@ -17,7 +18,7 @@ test('Browser Context Declaration', async ({ browser }) => {
 	await page.locator("[type='password']").fill("Learning@830$3mK2");
 	await signIn.click();
 
-	console.log(await page.locator("[style*='block']").textContent());
+	// console.log(await page.locator("[style*='block']").textContent());
 
 	await expect(page.locator("[style*='block']")).toContainText("Incorrect");
 
@@ -28,8 +29,6 @@ test('Browser Context Declaration', async ({ browser }) => {
 
 test('UI Controls', async ({ page }) => {
 	await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
-	const userName = page.locator("#username");
-	const signIn = page.locator("#signInBtn");
 	const documentLink = page.locator(".float-right a");
 	const dropDown = page.locator("select.form-control");
 	await dropDown.selectOption("consult");
@@ -39,9 +38,6 @@ test('UI Controls', async ({ page }) => {
 
 	// assertions for checking if the radio button is actually selected
 	await expect(page.locator(".radiotextsty").last()).toBeChecked();
-	/* we can use row 48 to check in the console if we are getting the correct output boolean value
-	console.log(await page.locator(".radiotextsty").last().isChecked());
-	*/
 
 	await page.locator("#terms").click();
 	await expect(page.locator("#terms")).toBeChecked();
@@ -54,13 +50,8 @@ test('UI Controls', async ({ page }) => {
 test('Child windows handling', async ({ browser }) => {
 	const context = await browser.newContext();
 	const page = await context.newPage();
-	const userName = page.locator('#username');
 	await page.goto("https://rahulshettyacademy.com/loginpagePractise/");
 	const documentLink = page.locator(".float-right a");
-	// console.log(await documentLink.first().textContent());
-
-	// context.waitForEvent('page'); // listen for new pages
-	// await documentLink.first().click(); // new page is opened
 
 	const [newPage] = await Promise.all([
 		context.waitForEvent('page'),
@@ -74,7 +65,7 @@ test('Child windows handling', async ({ browser }) => {
 	}
 	const arrayText = text.split("@");
 	const domain = arrayText[1].split(" ")[0];
-	console.log(domain);
+	// console.log(domain);
 
 	await page.locator("#username").fill(domain);
 });
