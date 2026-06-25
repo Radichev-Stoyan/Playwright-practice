@@ -55,33 +55,52 @@ test('Browser Context Declaration', async ({ page }) => {
         }
     }
 
+    await expect(page.locator(".ta-results")).toBeHidden();
+    await expect(page.locator(".ta-backdrop")).toBeHidden();
+
     // Validating email in checkout page
-    expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
+    await expect(page.locator(".user__name [type='text']").first()).toHaveText(email);
     await page.locator(".action__submit").click();
 
     await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
 
-    const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+    const rawOrderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
 
-    if (!orderId) {
-        throw new Error("There is no order id")
+    if (!rawOrderId) {
+        throw new Error("There is no order id");
     }
 
+    const orderId = rawOrderId.replaceAll("|", "").trim();
+
     await page.locator("button[routerlink*='myorders']").click();
-    await page.locator("tbody").waitFor();
+    await expect(page.locator("tbody")).toBeVisible();
 
     const rows = page.locator("tbody tr");
+    let orderFound = false;
 
     for (let i = 0; i < await rows.count(); i++) {
-        const currId = await rows.nth(i).locator("th").textContent();
+        const currId = (await rows.nth(i).locator("th").textContent())?.trim();
 
-        if (currId && orderId.includes(currId)) {
+        if (currId === orderId) {
             await rows.nth(i).locator("button").first().click();
+            orderFound = true;
             break;
         }
     }
 
+    expect(orderFound).toBeTruthy();
+
+    await expect(page.locator(".col-text")).toBeVisible();
+
     const orderIdDetails = (await page.locator(".col-text").textContent())?.trim();
+
     expect(orderIdDetails).toBeTruthy();
-    expect(orderId).toContain(orderIdDetails);
+    expect(orderIdDetails).toBe(orderId);
+
+    await page.locator("button[routerlink*='myorders']").click();
+    await expect(page.locator("tbody")).toBeVisible();
+
+    await page.locator('.btn-danger').click();
+
+    await expect(page.getByText(' You have No Orders to show at this time.')).toBeVisible();
 });
