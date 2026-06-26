@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test webApiPart1.spec.js --debug",
+    "test": "npx playwright test webApiPart1.spec.js",
     "safariConfig": "npx playwright test --config playwright.config1.js --project=safari"
   },
   "keywords": [],
